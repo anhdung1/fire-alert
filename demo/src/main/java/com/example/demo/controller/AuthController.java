@@ -3,24 +3,22 @@ package com.example.demo.controller;
 import com.example.demo.DTO.LoginRequest;
 import com.example.demo.DTO.LoginResponse;
 import com.example.demo.model.Users;
-import com.example.demo.service.AuthService;
+
+import com.example.demo.service.SensorsService;
 import com.example.demo.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    @Autowired
-    private AuthService authService;
     @Autowired
     private UsersService usersService;
     @Autowired
@@ -31,23 +29,18 @@ public class AuthController {
         try{Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
-
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            Users user=usersService.findByUsername(userDetails.getUsername());
-            LoginResponse loginResponse=new LoginResponse(user.getApiKey(),user.getAuthorities());
+            String username =authentication.getName();
+            Users user = usersService.getUsersRepository().findByUsername(username);
+            LoginResponse loginResponse=new LoginResponse(user.getApiKey(),user.getRoles().getRole());
             return ResponseEntity.ok(loginResponse); }
         catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody LoginRequest loginRequest) {
-        try {
-            authService.createUser(loginRequest.getUsername(), loginRequest.getPassword());
-            return ResponseEntity.ok("The account has been created successfully");
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok("You have been logged out");
     }
 }

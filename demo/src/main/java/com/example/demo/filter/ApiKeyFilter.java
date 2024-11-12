@@ -32,7 +32,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
         String apiKey = request.getHeader("x-api-key");
        if(apiKey != null) {
            System.out.println(apiKey);
-           Users user= usersService.findByApiKey(apiKey);
+           Users user= usersService.getUsersRepository().findByApiKey(apiKey);
            System.out.println(user);
            if(user != null) {
                UsernamePasswordAuthenticationToken authenticationToken=new UsernamePasswordAuthenticationToken(user,null, user.getAuthorities());

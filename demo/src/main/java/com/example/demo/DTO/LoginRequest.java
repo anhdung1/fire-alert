@@ -3,6 +3,7 @@ package com.example.demo.DTO;
 public class LoginRequest {
     private String username;
     private String password;
+    private String phoneNumber;
     public String getUsername() {
         return username;
     }
@@ -17,5 +18,13 @@ public class LoginRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -8,12 +9,14 @@ public class UserInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String address;
-    private String phone_number;
+    private String phoneNumber;
     private String email;
     private String name;
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "users_id")
     private Users users;
+    public UserInfo() {}
 
     public Long getId() {
         return id;
@@ -31,12 +34,12 @@ public class UserInfo {
         this.address = address;
     }
 
-    public String getPhone_number() {
-        return phone_number;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getEmail() {

@@ -6,8 +6,8 @@ import java.util.Collection;
 
 public class LoginResponse {
     private String apiKey;
-    private Collection<? extends GrantedAuthority> role;
-   public LoginResponse(String apiKey, Collection<? extends GrantedAuthority> role) {
+    private String role;
+   public LoginResponse(String apiKey, String role) {
        this.apiKey = apiKey;
        this.role = role;
    }
@@ -21,11 +21,11 @@ public class LoginResponse {
     }
 
 
-    public Collection<? extends GrantedAuthority> getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Collection<? extends GrantedAuthority> role) {
+    public void setRole(String role) {
         this.role = role;
     }
 }

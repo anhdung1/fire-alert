@@ -6,13 +6,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
-    @Autowired
+
     private PasswordEncoder passwordEncoder;
-    @Autowired
+
     private UsersService usersService;
 
-    public void createUser(String username, String password) {
+    public AuthService(PasswordEncoder passwordEncoder, UsersService usersService) {
+        this.passwordEncoder = passwordEncoder;
+        this.usersService = usersService;
+    }
 
-        usersService.createUser(username, passwordEncoder.encode(password));
+    public String passwordEncoder(String password){
+        return passwordEncoder.encode(password);
+    }
+    public void createUser(String username, String password,String phoneNumber) {
+
+        usersService.createUser(username, passwordEncoder.encode(password),phoneNumber);
     }
 }
