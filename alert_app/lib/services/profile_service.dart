@@ -1,11 +1,10 @@
-import 'dart:convert';
-
+import 'package:alert_app/models/sensor_response.dart';
 import 'package:alert_app/models/user_model.dart';
 import 'package:alert_app/services/api_service.dart';
 import 'package:alert_app/services/http_error.dart';
 import 'package:alert_app/services/json_to_object.dart';
 import 'package:alert_app/services/result.dart';
-import 'package:flutter/material.dart';
+
 import 'package:http/http.dart';
 
 class ProfileService {
@@ -39,17 +38,13 @@ class ProfileService {
     }
   }
 
-  Future<Result<List<String>>> getTopic() async {
-    try {
-      Response response = await apiService.getMapping("topic-subscribed");
-      if (response.statusCode == 200) {
-        List<String> result = jsonDecode(response.body);
-        return Result(data: result);
-      }
-      return Result(error: HttpError.getErrorMessage(response.statusCode));
-    } catch (e) {
-      debugPrint("Lỗi ở getTopic");
-      return Result(error: e.toString());
-    }
+  Future<Result<List<SensorResponse>>> getTopic() async {
+    return await apiService.jsonHandleGetMapping(
+        SensorResponse.fromJson, "users/topic-subscribed");
+  }
+
+  Future<Result<List<SensorResponse>>> getAllTopic() async {
+    return await apiService.jsonHandleGetMapping(
+        SensorResponse.fromJson, "admin/all-topic");
   }
 }

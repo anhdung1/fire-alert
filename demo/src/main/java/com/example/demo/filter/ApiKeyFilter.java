@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public class ApiKeyFilter extends OncePerRequestFilter {
 
-    private  UsersService usersService;
+    private final UsersService usersService;
 
     public ApiKeyFilter(UsersService usersService) {
         this.usersService = usersService;

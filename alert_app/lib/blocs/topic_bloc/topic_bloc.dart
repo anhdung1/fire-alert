@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:alert_app/services/profile_service.dart';
+import 'package:alert_app/models/sensor_response.dart';
+import 'package:alert_app/repositories/profile_repository.dart';
 import 'package:alert_app/services/result.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,16 +9,26 @@ part 'topic_state.dart';
 part 'topic_event.dart';
 
 class TopicBloc extends Bloc<TopicEvent, TopicState> {
-  final ProfileService profileService;
-  TopicBloc(this.profileService) : super(TopicInitalState()) {
+  final ProfileRepository profileRepository;
+  TopicBloc(this.profileRepository) : super(TopicInitalState()) {
     on<TopicStartedEvent>(_getTopic);
+    on<TopicGetAllEvent>(_getAllTopic);
   }
 
   FutureOr<void> _getTopic(
       TopicStartedEvent event, Emitter<TopicState> emit) async {
-    Result<List<String>> result = await profileService.getTopic();
+    Result<List<SensorResponse>> result = await profileRepository.getTopic();
     if (result.isSuccess) {
-      return emit(TopicSuccessState(topic: result.data!));
+      return emit(TopicSuccessState(sensors: result.data!));
+    }
+    return emit(TopicFailureState(error: result.error!));
+  }
+
+  FutureOr<void> _getAllTopic(
+      TopicGetAllEvent event, Emitter<TopicState> emit) async {
+    Result<List<SensorResponse>> result = await profileRepository.getAllTopic();
+    if (result.isSuccess) {
+      return emit(TopicSuccessState(sensors: result.data!));
     }
     return emit(TopicFailureState(error: result.error!));
   }
