@@ -15,12 +15,13 @@ public class AlertsService {
     private SensorsService sensorsService;
     @Autowired
     private AlertsRepository alertsRepository;
-    public void save(Boolean fire,Float ppm,String topic) {
+    public void save(Boolean fire,Float ppm,String topic,Float temperature) {
         Sensors sensors=sensorsService.getSensorsRepository().findByTopic(topic);
         Alerts alerts = new Alerts();
         alerts.setSensor(sensors);
         alerts.setFire(fire);
         alerts.setPpm(ppm);
+        alerts.setTemperature(temperature);
         alertsRepository.save(alerts);
     }
 }

@@ -12,6 +12,7 @@ public class Alerts {
     private Boolean fire;
     private Float ppm;
     private Timestamp alertTime;
+    private Float temperature;
     @ManyToOne
     @JoinColumn(name = "sensor_id")
     private Sensors sensor;
@@ -55,5 +56,13 @@ public class Alerts {
 
     public void setSensor(Sensors sensor) {
         this.sensor = sensor;
+    }
+
+    public Float getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(Float temperature) {
+        this.temperature = temperature;
     }
 }

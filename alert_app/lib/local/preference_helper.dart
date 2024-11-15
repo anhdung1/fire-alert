@@ -1,3 +1,4 @@
+import 'package:alert_app/models/sensor_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceHelper {
@@ -30,5 +31,19 @@ class PreferenceHelper {
   static Future<bool> getIsLoggedIn() async {
     final SharedPreferences prefs = await getPrefs();
     return prefs.getBool("isLoggedIn") ?? false;
+  }
+
+  static Future<void> saveTopic(List<SensorResponse> sensors) async {
+    List<String> topics = [];
+    for (int i = 0; i < sensors.length; i++) {
+      topics.add(sensors[i].topic);
+    }
+    final SharedPreferences prefs = await getPrefs();
+    prefs.setStringList("topic", topics);
+  }
+
+  static Future<List<String>> getSensor() async {
+    final SharedPreferences prefs = await getPrefs();
+    return prefs.getStringList("sensor") ?? [];
   }
 }

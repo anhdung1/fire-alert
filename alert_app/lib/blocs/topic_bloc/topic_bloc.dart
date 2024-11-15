@@ -27,6 +27,8 @@ class TopicBloc extends Bloc<TopicEvent, TopicState> {
   FutureOr<void> _getAllTopic(
       TopicGetAllEvent event, Emitter<TopicState> emit) async {
     Result<List<SensorResponse>> result = await profileRepository.getAllTopic();
+    // List<SensorResponse>sensors=await PreferenceHelper.getTopic();
+
     if (result.isSuccess) {
       return emit(TopicSuccessState(sensors: result.data!));
     }

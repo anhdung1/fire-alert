@@ -54,7 +54,7 @@ public class MqttPublisher {
                     try {
                         SensorsRequest sensorsRequest = objectMapper.readValue(json, SensorsRequest.class);
                         if (sensorsRequest.getFire()) {
-                            alertsService.save(sensorsRequest.getFire(), sensorsRequest.getPpm(), topic);
+                            alertsService.save(sensorsRequest.getFire(), sensorsRequest.getPpm(), topic,sensorsRequest.getTemperature());
                         }
                     } catch (JsonProcessingException e) {
                         System.out.println("Invalid JSON format");

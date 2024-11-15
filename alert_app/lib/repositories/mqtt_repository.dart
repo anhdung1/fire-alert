@@ -15,7 +15,7 @@ class MqttRepository {
   Future<void> subscribeTopic(List<SensorResponse> sensors) async {
     for (int i = 0; i < sensors.length; i++) {
       await mqttService.subscribe(sensors[i].topic);
-      mqttService.isSubscribed(sensors[i].topic);
+      // mqttService.isSubscribed(sensors[i].topic);
     }
   }
 
@@ -23,8 +23,11 @@ class MqttRepository {
     return mqttService.isConnected();
   }
 
-  Stream<AlertModel> receivedMessage() {
+  void receivedMessage() {
     mqttService.listenMessage();
+  }
+
+  Stream<AlertModel> getStreamMessage() {
     return mqttService.alertStream;
   }
 }

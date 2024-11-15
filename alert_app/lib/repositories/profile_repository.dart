@@ -1,3 +1,4 @@
+import 'package:alert_app/local/preference_helper.dart';
 import 'package:alert_app/models/sensor_response.dart';
 import 'package:alert_app/models/user_model.dart';
 import 'package:alert_app/services/profile_service.dart';
@@ -15,8 +16,12 @@ class ProfileRepository {
     return profileService.updateUser(user);
   }
 
-  Future<Result<List<SensorResponse>>> getAllTopic() {
-    return profileService.getAllTopic();
+  Future<Result<List<SensorResponse>>> getAllTopic() async {
+    Result<List<SensorResponse>> result = await profileService.getAllTopic();
+    if (result.isSuccess) {
+      PreferenceHelper.saveTopic(result.data!);
+    }
+    return result;
   }
 
   Future<Result<List<SensorResponse>>> getTopic() {

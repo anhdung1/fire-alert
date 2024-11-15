@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:alert_app/models/alert_model.dart';
 import 'package:alert_app/models/sensor_response.dart';
 import 'package:alert_app/repositories/mqtt_repository.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'mqtt_state.dart';
@@ -14,6 +14,7 @@ class MqttBloc extends Bloc<MqttEvent, MqttState> {
     on<MqttReconnectEvent>(_reconnect);
     on<MqttConnectEvent>(_connect);
     on<MqttSubcribeTopic>(_subscriptions);
+    on<MqttDisplayEvent>(_display);
   }
 
   FutureOr<void> _connect(
@@ -25,17 +26,17 @@ class MqttBloc extends Bloc<MqttEvent, MqttState> {
       await mqttRepository.subscribeTopic(event.sensors);
       mqttRepository.receivedMessage();
     }
-    mqttRepository.receivedMessage().listen((data) {
-      print(data.ppm);
+    mqttRepository.getStreamMessage().listen((data) {
+      add(MqttDisplayEvent(alertModel: data, sensors: event.sensors));
     });
-    Timer.periodic(const Duration(seconds: 10), (timer) async {
+    Timer.periodic(const Duration(seconds: 30), (timer) async {
       add(MqttReconnectEvent(sensors: event.sensors));
     });
   }
 
   FutureOr<void> _subscriptions(
       MqttSubcribeTopic event, Emitter<MqttState> emit) async {
-    mqttRepository.subscribeTopic(event.sensors);
+    await mqttRepository.subscribeTopic(event.sensors);
     mqttRepository.receivedMessage();
   }
 
@@ -49,6 +50,9 @@ class MqttBloc extends Bloc<MqttEvent, MqttState> {
       }
       emit(MqttConnectioFailure());
     }
-    print("đã chạy qua để thửu");
+  }
+
+  FutureOr<void> _display(MqttDisplayEvent event, Emitter<MqttState> emit) {
+    emit(MqttReceivedState(alertModel: event.alertModel));
   }
 }

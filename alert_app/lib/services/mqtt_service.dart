@@ -12,7 +12,7 @@ class MqttService {
 
   MqttService() : client = MqttServerClient("localhost", "client");
   final StreamController<AlertModel> _alertController =
-      StreamController<AlertModel>.broadcast();
+      StreamController<AlertModel>();
 
   Stream<AlertModel> get alertStream => _alertController.stream;
   Future<void> connect() async {
@@ -70,7 +70,8 @@ class MqttService {
   }
 
   void listenMessage() {
-    messages.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
+      print(messages.length);
       for (var message in messages) {
         final MqttPublishMessage recMessage =
             message.payload as MqttPublishMessage;
@@ -90,6 +91,6 @@ class MqttService {
     });
   }
 
-  Stream<List<MqttReceivedMessage<MqttMessage>>> get messages =>
-      client.updates!;
+  // Stream<List<MqttReceivedMessage<MqttMessage>>> get messages =>
+  //     client.updates!;
 }

@@ -17,3 +17,8 @@ class MqttSubcribeTopic extends MqttEvent {
 class MqttReconnectEvent extends MqttEvent {
   MqttReconnectEvent({required super.sensors});
 }
+
+class MqttDisplayEvent extends MqttEvent {
+  final AlertModel alertModel;
+  MqttDisplayEvent({required this.alertModel, required super.sensors});
+}
