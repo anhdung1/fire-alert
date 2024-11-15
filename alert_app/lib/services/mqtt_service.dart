@@ -1,95 +1,73 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:alert_app/models/alert_model.dart';
-import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
 class MqttService {
-  final MqttServerClient client;
+  late MqttServerClient client;
 
-  MqttService() : client = MqttServerClient("localhost", "client");
-  final StreamController<AlertModel> _alertController =
-      StreamController<AlertModel>.broadcast();
-
-  Stream<AlertModel> get alertStream => _alertController.stream;
-  Future<void> connect() async {
-    // client.port = 1883;
-    // client.logging(on: true);
-    client.keepAlivePeriod = 1120;
-    client.onDisconnected = onDisconnected;
+  MqttService(String broker, int port) {
+    client = MqttServerClient(broker, '');
+    client.port = port;
+    client.keepAlivePeriod = 20;
     client.onConnected = onConnected;
-    client.setProtocolV311();
+    client.onDisconnected = onDisconnected;
+    client.onSubscribed = onSubscribed;
+    client.onUnsubscribed = onUnsubscribed;
+    client.onSubscribeFail = onSubscribeFail;
+    client.pongCallback = pong;
+  }
+
+  // Hàm kết nối đến broker
+  Future<void> connect() async {
+    client.connectionMessage = MqttConnectMessage()
+        .withClientIdentifier('FlutterClient')
+        .startClean()
+        .withWillQos(MqttQos.atMostOnce);
 
     try {
       await client.connect();
-    } on NoConnectionException catch (e) {
-      debugPrint('EXAMPLE::client exception - $e');
-      client.disconnect();
-    } on SocketException catch (e) {
-      debugPrint('EXAMPLE::socket exception - $e');
-      client.disconnect();
+    } catch (e) {
+      disconnect();
     }
-  }
 
-  bool isConnected() {
-    return client.connectionStatus?.state == MqttConnectionState.connected;
-  }
-
-  Future subscribe(String topic) async {
-    if (isConnected()) {
-      client.subscribe(topic, MqttQos.atLeastOnce);
+    // Kiểm tra trạng thái kết nối
+    if (client.connectionStatus!.state == MqttConnectionState.connected) {
     } else {
-      debugPrint('Client is not connected. Cannot subscribe.');
+      disconnect();
     }
   }
 
+  // Hàm ngắt kết nối
+  void disconnect() {
+    client.disconnect();
+  }
+
+  // Hàm đăng ký vào một topic
+  void subscribeToTopic(String topic) {
+    client.subscribe(topic, MqttQos.atMostOnce);
+  }
+
+  // Hàm gửi tin nhắn
   void publishMessage(String topic, String message) {
     final builder = MqttClientPayloadBuilder();
     builder.addString(message);
-    if (isConnected()) {
-      client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
-    } else {
-      debugPrint('Client is not connected. Cannot publish message.');
-    }
+    client.publishMessage(topic, MqttQos.atMostOnce, builder.payload!);
   }
 
-  void onConnected() {
-    debugPrint('MQTT Connected');
-  }
+  // Xử lý khi kết nối thành công
+  void onConnected() {}
 
-  void isSubscribed(String topic) {
-    var status = client.getSubscriptionsStatus(topic);
-    debugPrint(status.toString());
-  }
+  // Xử lý khi ngắt kết nối
+  void onDisconnected() {}
 
-  void onDisconnected() {
-    debugPrint('MQTT Disconnected');
-  }
+  // Xử lý khi đăng ký thành công vào một topic
+  void onSubscribed(String topic) {}
 
-  void listenMessage() {
-    messages.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
-      for (var message in messages) {
-        final MqttPublishMessage recMessage =
-            message.payload as MqttPublishMessage;
-        final String payload = MqttPublishPayload.bytesToStringAsString(
-            recMessage.payload.message);
-        print(payload.toString());
-        try {
-          AlertModel alertModel =
-              AlertModel.fromJson(jsonDecode(payload) as Map<String, dynamic>);
-          _alertController.add(alertModel);
-          debugPrint("add success");
-        } catch (e) {
-          debugPrint("add failure");
-          debugPrint(e.toString());
-        }
-      }
-    });
-  }
+  // Xử lý khi hủy đăng ký
+  void onUnsubscribed(String? topic) {}
 
-  Stream<List<MqttReceivedMessage<MqttMessage>>> get messages =>
-      client.updates!;
+  // Xử lý khi đăng ký thất bại
+  void onSubscribeFail(String topic) {}
+
+  // Callback khi nhận được pong từ broker
+  void pong() {}
 }

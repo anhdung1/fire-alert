@@ -48,8 +48,11 @@ public class UsersController {
     @GetMapping("topic-subscribed")
     public ResponseEntity<?> getTopicSubscribed() {
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-        Users users=(Users)authentication.getPrincipal();
-
-        return ResponseEntity.ok(users.getTopics());
+        Set<Sensors> sensors=((Users) authentication.getPrincipal()).getTopics();
+        List<String> topics=new ArrayList<>();
+        for(Sensors sensor:sensors){
+            topics.add(sensor.getTopic());
+        }
+        return ResponseEntity.ok(topics);
     }
 }

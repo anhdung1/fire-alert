@@ -5,21 +5,9 @@ class PreferenceHelper {
     return await SharedPreferences.getInstance();
   }
 
-  static Future<void> saveLoginStatus(String? role, String apiKey) async {
+  Future<void> saveApiKey(String apiKey) async {
     final SharedPreferences prefs = await getPrefs();
-    prefs.setString("apiKey", apiKey);
-    prefs.setBool("isLoggedIn", true);
-    prefs.setString("role", role ?? "ROLE_USER");
-  }
-
-  static Future<void> removeLoginStatus() async {
-    final SharedPreferences prefs = await getPrefs();
-    prefs.clear();
-  }
-
-  static Future<String> getRole() async {
-    final SharedPreferences prefs = await getPrefs();
-    return prefs.getString("role") ?? "ROLE_USER";
+    await prefs.setString("apiKey", apiKey);
   }
 
   static Future<String> getApiKey() async {
@@ -27,8 +15,8 @@ class PreferenceHelper {
     return prefs.getString("apiKey") ?? "apikey not found";
   }
 
-  static Future<bool> getIsLoggedIn() async {
+  static Future<void> removeApiKey() async {
     final SharedPreferences prefs = await getPrefs();
-    return prefs.getBool("isLoggedIn") ?? false;
+    prefs.remove("apiKey");
   }
 }

@@ -1,12 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.DTO.LoginRequest;
-
+import com.example.demo.model.Users;
 import com.example.demo.service.AuthService;
-import com.example.demo.service.SensorsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,17 +14,16 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     @Autowired
     private AuthService authService;
-    @Autowired
-    private SensorsService sensorsService;
     @GetMapping
     public ResponseEntity<?> getAdmin() {
 
         return ResponseEntity.ok("OK");
     }
-    @GetMapping("all-topic")
-    public ResponseEntity<?> getAllTopics() {
-
-        return ResponseEntity.ok(sensorsService.getAllSensors());
+    @GetMapping("get-topic")
+    public ResponseEntity<?> getTopic() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users user = (Users) auth.getPrincipal();
+        return ResponseEntity.ok(user);
     }
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody LoginRequest loginRequest) {

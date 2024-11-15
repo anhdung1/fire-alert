@@ -112,6 +112,6 @@ public class MqttPublisher {
                 System.out.println("Đang kết nối tới Broker");
                 connectToMqttBroker();
             }
-        }, 0, 30, TimeUnit.SECONDS);
+        }, 0, 30, TimeUnit.MINUTES);
     }
 }

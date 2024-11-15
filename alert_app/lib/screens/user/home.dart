@@ -1,55 +1,28 @@
 import 'package:alert_app/blocs/topic_bloc/topic_bloc.dart';
-import 'package:alert_app/repositories/mqtt_repository.dart';
-import 'package:alert_app/repositories/profile_repository.dart';
-
-import 'package:alert_app/services/mqtt_service.dart';
-
+import 'package:alert_app/services/api_service.dart';
+import 'package:alert_app/services/profile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
+  @override
+  State<Home> createState() => _HomeState();
+}
 
+class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) => MqttService()),
-        RepositoryProvider(
-          create: (context) =>
-              MqttRepository(mqttService: context.read<MqttService>()),
-        )
-      ],
+    return RepositoryProvider(
+      create: (context) =>
+          ProfileService(apiService: context.read<ApiService>()),
       child: BlocProvider(
-        create: (context) => TopicBloc(context.read<ProfileRepository>())
-          ..add(TopicGetAllEvent()),
-        child: const HomePage(),
+        create: (context) =>
+            TopicBloc(context.read<ProfileService>())..add(TopicStartedEvent()),
+        child: Builder(
+          builder: (context) => Bloc,
+        ),
       ),
     );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<TopicBloc, TopicState>(
-      builder: (context, state) {
-        if (state is TopicSuccessState) {
-          // return const ;
-        }
-        return const SizedBox();
-      },
-      listener: (context, state) {},
-    );
-  }
-
-  mqttBlocConsumer() {
-    return;
   }
 }

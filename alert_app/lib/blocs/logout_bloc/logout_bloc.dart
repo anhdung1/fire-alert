@@ -14,7 +14,7 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
   FutureOr<void> _logout(
       LogoutSubmitEvent event, Emitter<LogoutState> emit) async {
     emit(LogoutLoadingState());
-    await PreferenceHelper.removeLoginStatus();
+    await PreferenceHelper.removeApiKey();
     emit(LogoutSuccessState());
   }
 }

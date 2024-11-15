@@ -19,6 +19,7 @@ class _MyHomeState extends State<MyHome> {
     BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: "Home"),
     BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: "Profile")
   ];
+  late LogoutBloc logoutBloc;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -30,18 +31,18 @@ class _MyHomeState extends State<MyHome> {
       ],
       child: Builder(
         builder: (context) {
+          logoutBloc = BlocProvider.of<LogoutBloc>(context);
           return BlocBuilder<BottombarBloc, BottombarState>(
             builder: (context, state) {
               return Stack(
                 children: [
                   Scaffold(
-                    body: IndexedStack(
-                      index: state.index,
-                      children: [
-                        const Home(),
-                        if (state.index == 1) const Profile()
-                      ],
-                    ),
+                    body: [
+                      Home(
+                        page: state.index.toString(),
+                      ),
+                      const Profile()
+                    ][state.index],
                     bottomNavigationBar: BottomNavigationBar(
                         selectedItemColor: ColorsWidget.iconColor,
                         currentIndex: state.index,

@@ -57,8 +57,15 @@ class _AdminHomePageState extends State<AdminHomePage> {
         return BlocConsumer<MqttBloc, MqttState>(
           builder: (context, mqttState) {
             if (mqttState is MqttConnectedState) {
-              return const Column(
-                children: [],
+              // return ;\
+            }
+            if (mqttState is MqttReceivedState) {
+              return Column(
+                children: [
+                  Text(mqttState.alertModel.ppm),
+                  Text(mqttState.alertModel.temperature),
+                  Text(mqttState.alertModel.fire ? "Bình thường" : "Cháy"),
+                ],
               );
             }
             return const SizedBox();
