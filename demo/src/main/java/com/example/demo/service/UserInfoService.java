@@ -22,10 +22,14 @@ public class UserInfoService {
 
     public void saveUserInfo(UserInfo newUserInfo,Users user) {
         UserInfo userInfo = user.getUserInfo();
+        if(userInfo == null) {
+           userInfo = new UserInfo();
+        }
         userInfo.setAddress(newUserInfo.getAddress());
         userInfo.setEmail(newUserInfo.getEmail());
         userInfo.setName(newUserInfo.getName());
         userInfo.setPhoneNumber(newUserInfo.getPhoneNumber());
+        userInfo.setUsers(user);
          userInfoRepository.save(userInfo);
     }
 }

@@ -31,7 +31,7 @@ public class AuthController {
         );
             String username =authentication.getName();
             Users user = usersService.getUsersRepository().findByUsername(username);
-            LoginResponse loginResponse=new LoginResponse(user.getApiKey(),user.getRoles().getRole());
+            LoginResponse loginResponse=new LoginResponse(user.getApiKey(),user.getRoles().getRole(),user.getId());
             return ResponseEntity.ok(loginResponse); }
         catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());

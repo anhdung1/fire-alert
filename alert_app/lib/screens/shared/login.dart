@@ -1,6 +1,8 @@
 import 'package:alert_app/blocs/login_bloc/login_bloc.dart';
 import 'package:alert_app/constant/colors_widget.dart';
 import 'package:alert_app/constant/widget.dart';
+import 'package:alert_app/screens/admin/admin_my_home.dart';
+
 import 'package:alert_app/screens/user/my_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,7 +43,7 @@ class _LoginState extends State<Login> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MyHome(),
+                  builder: (context) => const AdminMyHome(),
                 ));
           }
         },

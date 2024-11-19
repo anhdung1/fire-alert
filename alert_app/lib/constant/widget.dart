@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:alert_app/constant/colors_widget.dart';
@@ -36,7 +37,7 @@ inputText(String hintext, bool obscureText, controller) {
     return Container(
         alignment: Alignment.center,
         height: screenWidth / 9,
-        margin: EdgeInsets.only(bottom: screenWidth / 25),
+        // margin: EdgeInsets.only(bottom: screenWidth / 25),
         decoration: BoxDecoration(
             color: ColorsWidget.backgroundColorTextField,
             borderRadius: BorderRadius.circular(7)),
@@ -51,6 +52,50 @@ inputText(String hintext, bool obscureText, controller) {
               border: const OutlineInputBorder(borderSide: BorderSide.none)),
         ));
   });
+}
+
+Widget search(
+    TextEditingController controller, Function() onTap, screenHeight) {
+  return Row(
+    children: [
+      Expanded(
+        child: Container(
+            alignment: Alignment.center,
+            height: screenHeight / 16,
+            decoration: BoxDecoration(
+                color: ColorsWidget.backgroundColorTextField,
+                borderRadius: BorderRadius.circular(7)),
+            child: TextField(
+              controller: controller,
+              onSubmitted: (value) {
+                onTap();
+              },
+              decoration: InputDecoration(
+                  prefixIcon: Transform.rotate(
+                    angle: pi / 2,
+                    child: const Icon(Icons.search_rounded),
+                  ),
+                  hintStyle: TextStyle(
+                      color: ColorsWidget.hinTextColor,
+                      fontSize: screenHeight / 45),
+                  hintText: "Search",
+                  contentPadding: const EdgeInsets.only(left: 15),
+                  border:
+                      const OutlineInputBorder(borderSide: BorderSide.none)),
+            )),
+      ),
+      const SizedBox(
+        width: 10,
+      ),
+      InkWell(
+        onTap: onTap,
+        child: Icon(
+          Icons.filter_list_rounded,
+          size: screenHeight / 20,
+        ),
+      )
+    ],
+  );
 }
 
 loading() {

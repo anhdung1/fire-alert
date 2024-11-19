@@ -5,17 +5,14 @@ import 'package:alert_app/services/result.dart';
 
 class LoginRepository {
   final LoginService loginService;
-  final PreferenceHelper preferenceHelper;
 
-  LoginRepository({required this.loginService, required this.preferenceHelper});
+  LoginRepository({required this.loginService});
 
   Future<Result<LoginResponse>> login(String username, String password) async {
     Result<LoginResponse> result = await loginService.login(username, password);
     if (result.isSuccess) {
-      final apiKey = result.data?.apiKey;
-      if (apiKey != null) {
-        await preferenceHelper.saveApiKey(apiKey);
-      }
+      await PreferenceHelper.saveLoginStatus(
+          result.data!.role, result.data!.apiKey, result.data!.userId);
     }
 
     return result;

@@ -1,6 +1,7 @@
 import 'package:alert_app/blocs/logout_bloc/logout_bloc.dart';
 import 'package:alert_app/blocs/profile_bloc/profile_bloc.dart';
 import 'package:alert_app/constant/colors_widget.dart';
+import 'package:alert_app/constant/constant.dart';
 import 'package:alert_app/constant/widget.dart';
 import 'package:alert_app/repositories/profile_repository.dart';
 import 'package:alert_app/services/api_service.dart';
@@ -69,7 +70,7 @@ class _ProfileState extends State<Profile> {
                     Text(
                       "Profile",
                       style: TextStyle(
-                          fontSize: screenHeight / 30,
+                          fontSize: Constant.fontSizeTitle(screenHeight),
                           fontWeight: FontWeight.w600),
                     ),
                   ],

@@ -7,9 +7,11 @@ import java.util.Collection;
 public class LoginResponse {
     private String apiKey;
     private String role;
-   public LoginResponse(String apiKey, String role) {
+    private Long userId;
+   public LoginResponse(String apiKey, String role, Long userId) {
        this.apiKey = apiKey;
        this.role = role;
+       this.userId = userId;
    }
 
     public String getApiKey() {
@@ -27,5 +29,13 @@ public class LoginResponse {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

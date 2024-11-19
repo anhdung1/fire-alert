@@ -7,9 +7,9 @@ class TopicInitalState extends TopicState {}
 class TopicLoadingState extends TopicState {}
 
 class TopicSuccessState extends TopicState {
-  final List<String> topic;
+  final List<SensorResponse> sensors;
 
-  TopicSuccessState({required this.topic});
+  TopicSuccessState({required this.sensors});
 }
 
 class TopicFailureState extends TopicState {

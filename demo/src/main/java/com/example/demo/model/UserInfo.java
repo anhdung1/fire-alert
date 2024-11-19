@@ -12,6 +12,7 @@ public class UserInfo {
     private String phoneNumber;
     private String email;
     private String name;
+    private String imageUrl;
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "users_id")
@@ -64,5 +65,13 @@ public class UserInfo {
 
     public void setUsers(Users users) {
         this.users = users;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public class ApiKeyFilter extends OncePerRequestFilter {
 
-    private  UsersService usersService;
+    private final UsersService usersService;
 
     public ApiKeyFilter(UsersService usersService) {
         this.usersService = usersService;
@@ -30,6 +30,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String apiKey = request.getHeader("x-api-key");
+        System.out.println(apiKey);
        if(apiKey != null) {
            System.out.println(apiKey);
            Users user= usersService.getUsersRepository().findByApiKey(apiKey);

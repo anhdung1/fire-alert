@@ -54,8 +54,8 @@ class _InfomationState extends State<Infomation> {
                         _nameController.text = state.user!.name;
 
                         _emailController.text = state.user!.email;
-                        _addressController.text = state.user!.name;
-                        _phoneNumberController.text = state.user!.name;
+                        _addressController.text = state.user!.address;
+                        _phoneNumberController.text = state.user!.phoneNumber;
                       }
                       return infomationDefaultState(state, context);
                     },

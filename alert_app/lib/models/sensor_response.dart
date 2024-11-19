@@ -13,4 +13,5 @@ class SensorResponse extends JsonSerializable {
         location: json["location"] ?? "unknow",
         topic: json["topic"] ?? "");
   }
+  Map<String, dynamic> toMap() => {"location": location, "topic": topic};
 }
