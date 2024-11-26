@@ -24,11 +24,12 @@ public class MqttPublisher {
     private final Map<String, Long> lastMessageTimeByTopic = new HashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final ObjectMapper objectMapper = new ObjectMapper();
-
+    private final FirebaseMessageService firebaseMessageService;
     @Autowired
-    public MqttPublisher(SensorsService sensorsService, AlertsService alertsService) {
+    public MqttPublisher(SensorsService sensorsService, AlertsService alertsService, FirebaseMessageService firebaseMessageService) {
         this.sensorsService = sensorsService;
         this.alertsService = alertsService;
+        this.firebaseMessageService = firebaseMessageService;
         startConnectionChecker();
     }
 
@@ -53,8 +54,9 @@ public class MqttPublisher {
                     lastMessageTimeByTopic.put(topic, System.currentTimeMillis());
                     try {
                         SensorsRequest sensorsRequest = objectMapper.readValue(json, SensorsRequest.class);
-                        if (sensorsRequest.getFire()) {
+                        if (!sensorsRequest.getFire()) {
                             alertsService.save(sensorsRequest.getFire(), sensorsRequest.getPpm(), topic,sensorsRequest.getTemperature());
+
                         }
                     } catch (JsonProcessingException e) {
                         System.out.println("Invalid JSON format");

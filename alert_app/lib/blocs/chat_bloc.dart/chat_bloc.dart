@@ -22,13 +22,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   FutureOr<void> _getHistory(
       ChatGetHistoryEvent event, Emitter<ChatState> emit) async {
+    if (event.isCompleted == true) return;
     Result<List<ChatModel>> result =
         await chatRepository.getMessageHistory(page);
 
     if (result.isSuccess) {
       page++;
-      listMessage.insertAll(0, result.data!);
-      emit(ChatSuccessState(listMessage: listMessage));
+      listMessage.addAll(result.data!);
+      emit(ChatGetHistorySuccessState(
+          listMessage: listMessage,
+          isCompleted: result.data!.length < 30 ? true : false));
     }
   }
 

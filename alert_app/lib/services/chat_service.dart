@@ -19,7 +19,8 @@ class ChatService {
   Future<Result<List<ChatModel>>> getChatHistory(int page) async {
     List<ChatModel> listChat = [];
     try {
-      Response response = await apiService.getMapping("chat-history");
+      Response response =
+          await apiService.getMapping("chat-history?page=$page");
       if (response.statusCode == 200) {
         List result = jsonDecode(utf8.decode(response.bodyBytes));
         for (int i = 0; i < result.length; i++) {

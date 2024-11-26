@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "18390664830",
+    "firebase_url": "https://fire-alarm-4b1a5-default-rtdb.firebaseio.com",
+    "project_id": "fire-alarm-4b1a5",
+    "storage_bucket": "fire-alarm-4b1a5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:18390664830:android:2b03eef19e6eebb477fa2f",
+        "android_client_info": {
+          "package_name": "com.example.alert_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDm9MhECGkO9gTyXCrP7_Gro31uHDW47-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

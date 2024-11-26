@@ -62,12 +62,13 @@ class MqttBloc extends Bloc<MqttEvent, MqttState> {
   FutureOr<void> _reconnect(
       MqttReconnectEvent event, Emitter<MqttState> emit) async {
     if (!mqttRepository.isConnected()) {
+      emit(MqttConnectingState());
       await mqttRepository.connectToBroker();
       if (mqttRepository.isConnected()) {
         add(MqttSubcribeTopic(sensors: event.sensors));
         return emit(MqttReceivedState(alertResponse: alertResponseSet));
       }
-      emit(MqttConnectioFailure());
+      emit(MqttConnectionFailure(error: "Không thể kết nối tới MQTT"));
     }
   }
 

@@ -30,10 +30,10 @@ public class Users {
             name = "subscribe_topic",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "sensors_id")
-
-
     )
     private Set<Sensors> sensors= new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private List<DeviceTokens>deviceTokens;
     public Long getId() {
         return id;
     }
@@ -91,4 +91,11 @@ public class Users {
         return sensors;
     }
 
+    public List<DeviceTokens> getDeviceTokens() {
+        return deviceTokens;
+    }
+
+    public void setDeviceTokens(List<DeviceTokens> deviceTokens) {
+        this.deviceTokens = deviceTokens;
+    }
 }

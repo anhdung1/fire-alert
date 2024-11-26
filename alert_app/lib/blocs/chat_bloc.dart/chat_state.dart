@@ -12,6 +12,13 @@ class ChatSuccessState extends ChatState {
   ChatSuccessState({required this.listMessage});
 }
 
+class ChatGetHistorySuccessState extends ChatState {
+  bool? isCompleted;
+  final List<ChatModel> listMessage;
+
+  ChatGetHistorySuccessState({required this.listMessage, this.isCompleted});
+}
+
 class ChatGetHistoryFailure extends ChatState {}
 
 class ChatConnectFailureState extends ChatState {}

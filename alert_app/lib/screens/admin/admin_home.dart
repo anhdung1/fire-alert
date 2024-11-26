@@ -1,5 +1,6 @@
 import 'package:alert_app/blocs/mqtt_bloc/mqtt_bloc.dart';
 import 'package:alert_app/blocs/topic_bloc/topic_bloc.dart';
+import 'package:alert_app/constant/colors_widget.dart';
 import 'package:alert_app/constant/constant.dart';
 import 'package:alert_app/models/alert_response.dart';
 import 'package:alert_app/repositories/mqtt_repository.dart';
@@ -56,9 +57,12 @@ class _AdminHomePageState extends State<AdminHomePage> {
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
-    return Padding(
+    return Container(
       padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+      width: screenWidth,
+      height: screenHeight,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             "My Home",
@@ -100,6 +104,52 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   return itemGridView(mqttState.alertResponse.toList()[index]);
                 },
               ));
+            }
+            if (mqttState is MqttConnectingState) {
+              return Expanded(
+                child: Center(
+                  child: Container(
+                    width: 300,
+                    height: 130,
+                    padding: const EdgeInsets.all(
+                        16.0), // Tạo khoảng cách đều xung quanh nội dung
+                    decoration: BoxDecoration(
+                      color: ColorsWidget.iconColor,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black38,
+                          blurRadius: 4, // Tạo hiệu ứng bóng mềm hơn
+                          offset: Offset(2, 2), // Tăng chiều sâu
+                        ),
+                      ],
+                    ),
+                    child: const Column(
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // Căn giữa nội dung bên trong
+                      children: [
+                        Text(
+                          "Đang kết nối tới MQTT",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight:
+                                  FontWeight.bold), // Tăng kích thước chữ
+                          textAlign: TextAlign.center, // Canh giữa văn bản
+                        ),
+                        SizedBox(
+                            height:
+                                16), // Thêm khoảng cách giữa Text và CircularProgressIndicator
+                        CircularProgressIndicator(),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+            if (mqttState is MqttConnectionFailure) {
+              return Center(
+                child: Text(mqttState.error),
+              );
             }
             return const SizedBox();
           },

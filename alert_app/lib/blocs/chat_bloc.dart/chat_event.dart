@@ -2,7 +2,11 @@ part of 'chat_bloc.dart';
 
 abstract class ChatEvent {}
 
-class ChatGetHistoryEvent extends ChatEvent {}
+class ChatGetHistoryEvent extends ChatEvent {
+  final bool isCompleted;
+
+  ChatGetHistoryEvent({required this.isCompleted});
+}
 
 class ChatConnectWebsocketEvent extends ChatEvent {}
 
