@@ -4,6 +4,7 @@ import com.example.demo.DTO.LoginRequest;
 import com.example.demo.DTO.LoginResponse;
 import com.example.demo.model.Users;
 
+import com.example.demo.service.DeviceTokensService;
 import com.example.demo.service.SensorsService;
 import com.example.demo.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ public class AuthController {
     private UsersService usersService;
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try{Authentication authentication = authenticationManager.authenticate(
@@ -37,7 +37,6 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
     @PostMapping("/logout")
     public ResponseEntity<?> logout() {
         SecurityContextHolder.clearContext();

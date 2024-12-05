@@ -4,6 +4,12 @@ public class SensorsRequest {
     private Boolean fire;
     private Float ppm;
     private Float temperature;
+    public SensorsRequest(Boolean fire,Float ppm,Float temperature){
+        this.fire=fire;
+        this.ppm=ppm;
+        this.temperature=temperature;
+    }
+    public SensorsRequest(){};
     public Boolean getFire() {
         return fire;
     }

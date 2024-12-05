@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.model.Users;
 import com.example.demo.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -52,5 +53,12 @@ public class UsersService  {
         } while (usersRepository.existsByApiKey(apiKey));
         return apiKey;
     }
-
+    @Cacheable(value = "users",key = "#username")
+    public Users findByUsername(String username){
+        return usersRepository.findByUsername(username);
+    }
+    @Cacheable(value = "users",key = "#apiKey")
+    public Users findByApiKey(String apiKey){
+        return usersRepository.findByApiKey(apiKey);
+    }
 }

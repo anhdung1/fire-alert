@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.DTO.SensorsRequest;
+import com.example.demo.model.DeviceTokens;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.paho.client.mqttv3.*;
@@ -22,11 +23,16 @@ public class MqttPublisher {
     private MqttClient mqttClient;
     private final SensorsService sensorsService;
     private final Map<String, Long> lastMessageTimeByTopic = new HashMap<>();
+    private final Map<String, Boolean> lastSensorMap = new HashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final FirebaseMessageService firebaseMessageService;
     @Autowired
-    public MqttPublisher(SensorsService sensorsService, AlertsService alertsService, FirebaseMessageService firebaseMessageService) {
+    private DeviceTokensService deviceTokensService;
+    @Autowired
+    public MqttPublisher(SensorsService sensorsService,
+                         AlertsService alertsService,
+                         FirebaseMessageService firebaseMessageService) {
         this.sensorsService = sensorsService;
         this.alertsService = alertsService;
         this.firebaseMessageService = firebaseMessageService;
@@ -52,12 +58,22 @@ public class MqttPublisher {
                     String json = new String(message.getPayload());
                     System.out.println("Received message from topic " + topic + ": " + json);
                     lastMessageTimeByTopic.put(topic, System.currentTimeMillis());
+
                     try {
                         SensorsRequest sensorsRequest = objectMapper.readValue(json, SensorsRequest.class);
-                        if (!sensorsRequest.getFire()) {
-                            alertsService.save(sensorsRequest.getFire(), sensorsRequest.getPpm(), topic,sensorsRequest.getTemperature());
+                        if (!sensorsRequest.getFire()&&lastSensorMap.get(topic)!=sensorsRequest.getFire()) {
+                            alertsService.save(sensorsRequest.getFire(),
+                                    sensorsRequest.getPpm(),
+                                    topic,sensorsRequest.getTemperature());
+                            List<String> tokens =  deviceTokensService.getDeviceTokensRepository().findAllToken();
+                            for(String token:tokens){
+                                StringBuilder room=new StringBuilder(topic);
+
+                                firebaseMessageService.sendNotification("Cảnh báo","Cháy ở phòng "+room.substring(7,10),token);
+                            }
 
                         }
+                        lastSensorMap.put(topic,sensorsRequest.getFire());
                     } catch (JsonProcessingException e) {
                         System.out.println("Invalid JSON format");
                     }

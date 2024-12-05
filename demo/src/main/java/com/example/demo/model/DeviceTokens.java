@@ -9,6 +9,8 @@ public class DeviceTokens {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String deviceToken;
+    private String deviceId;
+    private String deviceName;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users user;
@@ -35,5 +37,21 @@ public class DeviceTokens {
 
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 }

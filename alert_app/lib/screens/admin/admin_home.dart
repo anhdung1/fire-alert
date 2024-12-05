@@ -94,6 +94,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
       child: Builder(builder: (context) {
         return BlocConsumer<MqttBloc, MqttState>(
           builder: (context, mqttState) {
+            print(mqttState);
             if (mqttState is MqttReceivedState) {
               return Expanded(
                   child: GridView.builder(

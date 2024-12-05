@@ -30,4 +30,8 @@ class MqttRepository {
   Stream<AlertResponse> getStreamMessage() {
     return mqttService.alertStream;
   }
+
+  Future<void> closeListenMessage() async {
+    await mqttService.closeListenMessage();
+  }
 }

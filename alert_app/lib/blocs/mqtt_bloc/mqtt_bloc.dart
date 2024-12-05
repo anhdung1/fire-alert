@@ -9,7 +9,7 @@ part 'mqtt_state.dart';
 part 'mqtt_event.dart';
 
 class MqttBloc extends Bloc<MqttEvent, MqttState> {
-  Timer? _timer;
+  Timer _timer = Timer(const Duration(seconds: 0), () {});
   List<AlertResponse> alertResponseSet = [];
   final MqttRepository mqttRepository;
   MqttBloc(this.mqttRepository) : super(MqttInitalState()) {
@@ -31,24 +31,32 @@ class MqttBloc extends Bloc<MqttEvent, MqttState> {
       alertResponseSet.add(alertResponse);
     }
     await (mqttRepository.connectToBroker());
-    if (mqttRepository.isConnected()) {
-      await mqttRepository.subscribeTopic(event.sensors);
+    if (!isClosed) {
+      if (mqttRepository.isConnected()) {
+        await mqttRepository.subscribeTopic(event.sensors);
 
-      mqttRepository.receivedMessage();
-      emit(MqttReceivedState(alertResponse: alertResponseSet));
-    }
-    mqttRepository.getStreamMessage().listen((data) {
-      // alertResponseSet.add(data);
-      int index =
-          alertResponseSet.indexWhere((item) => item.topic == data.topic);
-      if (index != -1) {
-        alertResponseSet.removeAt(index);
-        alertResponseSet.insert(index, data);
+        mqttRepository.receivedMessage();
+
+        emit(MqttReceivedState(alertResponse: alertResponseSet));
       }
-      add(MqttDisplayEvent(
-          alertResponse: alertResponseSet, sensors: event.sensors));
-    });
+    }
+    if (!isClosed) {
+      mqttRepository.getStreamMessage().listen((data) {
+        int index =
+            alertResponseSet.indexWhere((item) => item.topic == data.topic);
+        if (index != -1) {
+          alertResponseSet.removeAt(index);
+          alertResponseSet.insert(index, data);
+        }
+        add(MqttDisplayEvent(
+            alertResponse: alertResponseSet, sensors: event.sensors));
+      });
+    }
     _timer = Timer.periodic(const Duration(seconds: 30), (timer) async {
+      if (isClosed) {
+        _timer.cancel();
+        return;
+      }
       add(MqttReconnectEvent(sensors: event.sensors));
     });
   }
@@ -73,14 +81,14 @@ class MqttBloc extends Bloc<MqttEvent, MqttState> {
   }
 
   @override
-  Future<void> close() {
-    _timer?.cancel();
+  Future<void> close() async {
+    _timer.cancel();
     mqttRepository.mqttService.client.disconnect();
-    return super.close();
+    await mqttRepository.closeListenMessage();
+    return await super.close();
   }
 
   FutureOr<void> _display(MqttDisplayEvent event, Emitter<MqttState> emit) {
-    // emit(MqttConnectingState());
     emit(MqttReceivedState(alertResponse: event.alertResponse));
   }
 }

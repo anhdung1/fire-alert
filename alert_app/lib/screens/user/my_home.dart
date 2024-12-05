@@ -2,6 +2,7 @@ import 'package:alert_app/blocs/bottombar_bloc/bottombar_bloc.dart';
 import 'package:alert_app/blocs/logout_bloc/logout_bloc.dart';
 import 'package:alert_app/constant/colors_widget.dart';
 import 'package:alert_app/constant/widget.dart';
+import 'package:alert_app/repositories/device_token_repository.dart';
 import 'package:alert_app/repositories/profile_repository.dart';
 import 'package:alert_app/screens/profile.dart';
 import 'package:alert_app/screens/shared/chat.dart';
@@ -42,7 +43,9 @@ class _MyHomeState extends State<MyHome> {
           BlocProvider(
             create: (context) => BottombarBloc(),
           ),
-          BlocProvider(create: (context) => LogoutBloc())
+          BlocProvider(
+              create: (context) =>
+                  LogoutBloc(context.read<DeviceTokenRepository>()))
         ],
         child: Builder(
           builder: (context) {

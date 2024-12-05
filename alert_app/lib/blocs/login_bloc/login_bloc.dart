@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:alert_app/models/login_response.dart';
+import 'package:alert_app/repositories/device_token_repository.dart';
 import 'package:alert_app/repositories/login_repository.dart';
 
 import 'package:alert_app/services/result.dart';
@@ -11,7 +12,9 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginRepository loginRepository;
-  LoginBloc(this.loginRepository) : super(LoginInitialState(isLoading: false)) {
+  final DeviceTokenRepository deviceTokenRepository;
+  LoginBloc(this.loginRepository, this.deviceTokenRepository)
+      : super(LoginInitialState(isLoading: false)) {
     on<LoginSubmitEvent>(_login);
   }
 
@@ -21,6 +24,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Result<LoginResponse> result =
         await loginRepository.login(event.username, event.password);
     if (result.isSuccess) {
+      await deviceTokenRepository.sendDeviceInfo();
       if (result.data!.role == "ROLE_USER") {
         return emit(LoginUserSuccessState(isLoading: false));
       }

@@ -1,13 +1,15 @@
-import 'dart:developer';
+import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FirebaseMessagingService {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  Future<void> configureFirebase() async {
+  static final FirebaseMessaging _firebaseMessaging =
+      FirebaseMessaging.instance;
+  StreamSubscription<RemoteMessage>? _messageSubscription;
+  static Future<String> configureFirebase() async {
     String? deviceToken = await _firebaseMessaging.getToken();
 
-    log("token: ${deviceToken ?? "null"}");
+    return deviceToken ?? "";
   }
 
   Future<void> setting() async {
@@ -23,6 +25,15 @@ class FirebaseMessagingService {
   }
 
   void receivedMessage() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage data) {});
+    _messageSubscription =
+        FirebaseMessaging.onMessage.listen((RemoteMessage data) {});
+  }
+
+  void disconnectOnMessage() {
+    if (_messageSubscription != null) _messageSubscription!.cancel();
+  }
+
+  static Future<void> deleteToken() async {
+    await FirebaseMessaging.instance.deleteToken();
   }
 }

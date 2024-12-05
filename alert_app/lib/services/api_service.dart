@@ -41,6 +41,12 @@ class ApiService {
         body: jsonEncode(body));
   }
 
+  deleteMapping(String url, body) async {
+    return await client.delete(Uri.parse("http://${Constant.ip}:8080/$url"),
+        headers: headers(await PreferenceHelper.getApiKey()),
+        body: jsonEncode(body));
+  }
+
   Future jsonHandlePutMapping<T>(
       T Function(Map<String, dynamic>) fromJson, String url, body) async {
     try {

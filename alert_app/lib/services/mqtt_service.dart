@@ -17,8 +17,6 @@ class MqttService {
 
   Stream<AlertResponse> get alertStream => _alertController.stream;
   Future<void> connect() async {
-    // client.port = 1883;
-    // client.logging(on: true);
     client.keepAlivePeriod = 1120;
     client.onDisconnected = onDisconnected;
     client.onConnected = onConnected;
@@ -91,6 +89,9 @@ class MqttService {
     });
   }
 
+  Future<void> closeListenMessage() async {
+    await _alertController.close();
+  }
   // Stream<List<MqttReceivedMessage<MqttMessage>>> get messages =>
   //     client.updates!;
 }
